@@ -1,4 +1,3 @@
-import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:technest/blocks/colors.dart';
 import 'package:flutter_text_box/flutter_text_box.dart';
@@ -29,10 +28,9 @@ class SigninPage extends StatelessWidget {
           // Login Form
           Center(
             child: Container(
-              padding:
-                  const EdgeInsets.symmetric(horizontal: 24.0, vertical: 40.0),
+              padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 40.0),
               decoration: BoxDecoration(
-                color: Colors.white,
+                color: AppColors.bcolor,
                 borderRadius: BorderRadius.circular(16.0),
                 boxShadow: [
                   BoxShadow(
@@ -114,83 +112,29 @@ class SigninPage extends StatelessWidget {
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       // Google icon container
-                      Container(
-                        width: 50,
-                        height: 50,
-                        decoration: BoxDecoration(
-                          color: Colors.white,
-                          borderRadius: BorderRadius.circular(8),
-                          boxShadow: [
-                            BoxShadow(
-                              color: Colors.black.withOpacity(0.1),
-                              spreadRadius: 2,
-                              blurRadius: 4,
-                              offset: const Offset(0, 2),
-                            ),
-                          ],
-                        ),
-                        child: IconButton(
-                          onPressed: () {
-                            // Add Google sign-in logic here
-                          },
-                          icon: Image.asset('assets/google.png'),
-                          // Path to Google icon
-                          iconSize: 24, // Adjust icon size within the box
-                        ),
+                      _buildSocialButton(
+                        'assets/google.png',
+                            () {
+                          // Google sign-in logic
+                        },
                       ),
                       const SizedBox(width: 16),
 
                       // Facebook icon container
-                      Container(
-                        width: 50,
-                        height: 50,
-                        decoration: BoxDecoration(
-                          color: Colors.white,
-                          borderRadius: BorderRadius.circular(8),
-                          boxShadow: [
-                            BoxShadow(
-                              color: Colors.black.withOpacity(0.1),
-                              spreadRadius: 2,
-                              blurRadius: 4,
-                              offset: const Offset(0, 2),
-                            ),
-                          ],
-                        ),
-                        child: IconButton(
-                          onPressed: () {
-                            // Add Facebook sign-in logic here
-                          },
-                          icon: Image.asset('assets/facebook.png'),
-                          // Path to Facebook icon
-                          iconSize: 24,
-                        ),
+                      _buildSocialButton(
+                        'assets/facebook.png',
+                            () {
+                          // Facebook sign-in logic
+                        },
                       ),
                       const SizedBox(width: 16),
 
                       // Twitter icon container
-                      Container(
-                        width: 50,
-                        height: 50,
-                        decoration: BoxDecoration(
-                          color: Colors.white,
-                          borderRadius: BorderRadius.circular(8),
-                          boxShadow: [
-                            BoxShadow(
-                              color: Colors.black.withOpacity(0.1),
-                              spreadRadius: 2,
-                              blurRadius: 4,
-                              offset: const Offset(0, 2),
-                            ),
-                          ],
-                        ),
-                        child: IconButton(
-                          onPressed: () {
-                            // Add Twitter sign-in logic here
-                          },
-                          icon: Image.asset('assets/twitter.png'),
-                          // Path to Twitter icon
-                          iconSize: 24,
-                        ),
+                      _buildSocialButton(
+                        'assets/twitter.png',
+                            () {
+                          // Twitter sign-in logic
+                        },
                       ),
                     ],
                   ),
@@ -206,11 +150,12 @@ class SigninPage extends StatelessWidget {
                       ),
                       TextButton(
                         onPressed: () {
-                          TapGestureRecognizer().onTap = () {
-                            SignupPage();
-                          };
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(builder: (context) => const SignupPage()),
+                          );
                         },
-                        child: Text(
+                        child: const Text(
                           'Sign up',
                           style: TextStyle(color: AppColors.pcolor),
                         ),
@@ -222,6 +167,31 @@ class SigninPage extends StatelessWidget {
             ),
           ),
         ],
+      ),
+    );
+  }
+
+  // Reusable Social Media Button
+  Widget _buildSocialButton(String assetPath, VoidCallback onPressed) {
+    return Container(
+      width: 50,
+      height: 50,
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(8),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.1),
+            spreadRadius: 2,
+            blurRadius: 4,
+            offset: const Offset(0, 2),
+          ),
+        ],
+      ),
+      child: IconButton(
+        onPressed: onPressed,
+        icon: Image.asset(assetPath),
+        iconSize: 24,
       ),
     );
   }

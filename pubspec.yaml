@@ -17,6 +17,7 @@ dependencies:
   dio: ^5.7.0
   flutter_text_box: ^0.0.1
   flutter_svg: ^2.0.14
+  animated_search_bar: ^2.7.2
 
 dev_dependencies:
   flutter_test:
@@ -32,6 +33,15 @@ flutter:
     - assets/google.png
     - assets/twitter.png
     - assets/facebook.png
+    - assets/laptop.jpg
+    - assets/gaming.jpg
+    - assets/headphones.jpg
+    - assets/swatch.jpg
+    - assets/phone.jpg
+    - assets/vr.jpg
+    - assets/header.png
+    - assets/apple_watch.jpg
+    - assets/iphone_13.png
 
   #fonts:
   #   - family: Funnelsans
