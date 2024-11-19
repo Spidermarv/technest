@@ -19,7 +19,7 @@ class MyApp extends StatelessWidget {
       child:  MaterialApp(
         debugShowCheckedModeBanner: false,
         title: 'Tech Nest',
-        home: HomeScreen(),
+        home: SplashPage(),
       ),
     );
   }

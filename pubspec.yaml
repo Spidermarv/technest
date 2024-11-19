@@ -19,6 +19,7 @@ dependencies:
   flutter_svg: ^2.0.14
   animated_search_bar: ^2.7.2
   rive: ^0.13.17
+  shared_preferences: ^2.3.3
 
 dev_dependencies:
   flutter_test:
