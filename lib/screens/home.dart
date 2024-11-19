@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:technest/blocks/colors.dart';
+import 'package:technest/blocks/NavItem.dart';
+import 'package:rive/rive.dart';
 
 class HomeScreen extends StatelessWidget {
   @override
@@ -7,10 +9,10 @@ class HomeScreen extends StatelessWidget {
     return Scaffold(
       backgroundColor: Colors.grey[100],
       appBar: AppBar(
-        backgroundColor: Colors.white,
+        backgroundColor: AppColors.pcolor,
         elevation: 0,
         leading: IconButton(
-          icon: Icon(Icons.menu, color: AppColors.tcolor,),
+          icon: Icon(Icons.menu, color: AppColors.tcolor),
           onPressed: () {
             // Add navigation to Drawer
           },
@@ -81,8 +83,40 @@ class HomeScreen extends StatelessWidget {
             _productCard(
                 'assets/iphone_13.png', 'iPhone 13 Mini', 'MWK 1,000,000', 15),
             _productCard(
-                'assets/apple_watch.jpg', 'Apple Watch S8', 'MWK 3,500,000 ', 20),
+                'assets/apple_watch.jpg', 'Apple Watch S8', 'MWK 3,500,000', 20),
           ],
+        ),
+      ),
+      bottomNavigationBar: SafeArea(
+        child: Container(
+          padding: EdgeInsets.all(12),
+          margin: EdgeInsets.symmetric(horizontal: 25),
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.all(Radius.circular(24)),
+            color: AppColors.pcolor.withOpacity(0.8),
+            boxShadow: [
+              BoxShadow(
+                color: AppColors.tcolor.withOpacity(0.3),
+                offset: Offset(-1, 20),
+                blurRadius: 20,
+              ),
+            ],
+          ),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: List.generate(bottomNavItems.length, (index) {
+              final riveIcon = bottomNavItems[index].rive;
+              return SizedBox(
+                height: 36,
+                width: 36,
+                child: RiveAnimation.asset(
+                  riveIcon.src,
+                  artboard: riveIcon.artboard,
+                  stateMachines: [riveIcon.stateMachineName],
+                ),
+              );
+            }),
+          ),
         ),
       ),
     );
@@ -136,7 +170,8 @@ class HomeScreen extends StatelessWidget {
                 SizedBox(height: 5),
                 Text(
                   price,
-                  style: TextStyle(color: Colors.red, fontWeight: FontWeight.bold),
+                  style: TextStyle(
+                      color: Colors.red, fontWeight: FontWeight.bold),
                 ),
                 SizedBox(height: 5),
                 Text(
