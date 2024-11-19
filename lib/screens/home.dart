@@ -1,53 +1,130 @@
 import 'package:flutter/material.dart';
+import 'package:rive/rive.dart';
 import 'package:technest/blocks/colors.dart';
 import 'package:technest/blocks/NavItem.dart';
-import 'package:rive/rive.dart';
 
-class HomeScreen extends StatelessWidget {
+class HomeScreen extends StatefulWidget {
+  @override
+  _HomeScreenState createState() => _HomeScreenState();
+}
+
+class _HomeScreenState extends State<HomeScreen> {
+  int _activeCategoryIndex = 0;
+  int _activeNavIndex = 0;
+
+  final List<String> categories = ["All", "iPhone", "iPad", "Accessories"];
+  final List<IconData> categoryIcons = [
+    Icons.grid_view,
+    Icons.phone_iphone,
+    Icons.tablet_mac,
+    Icons.headset
+  ];
+
+
+  bool isTyping = false;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.grey[100],
       appBar: AppBar(
-        backgroundColor: AppColors.pcolor,
-        elevation: 0,
-        leading: IconButton(
-          icon: Icon(Icons.menu, color: AppColors.tcolor),
-          onPressed: () {
-            // Add navigation to Drawer
-          },
+        backgroundColor: AppColors.pcolor.withOpacity(0.9),
+        elevation: 3,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.vertical(
+            bottom: Radius.circular(30),
+          ),
         ),
-        title: TextField(
-          decoration: InputDecoration(
-            hintText: 'Search for products, brands...',
-            prefixIcon: Icon(Icons.search, color: Colors.grey),
-            filled: true,
-            fillColor: Colors.grey[200],
-            border: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(30),
-              borderSide: BorderSide.none,
+        leading: Builder(
+          builder: (context) => IconButton(
+            icon: Icon(Icons.menu, color: AppColors.tcolor),
+            onPressed: () {
+              Scaffold.of(context).openDrawer();
+            },
+          ),
+        ),
+        title: Container(
+          margin: EdgeInsets.only(bottom: 8),
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(30),
+          ),
+          child: TextField(
+            onChanged: (value) {
+              setState(() {
+                isTyping = value.isNotEmpty;
+              });
+            },
+            decoration: InputDecoration(
+              contentPadding: EdgeInsets.symmetric(vertical: 10, horizontal: 20),
+              hintText: 'Search for products, brands...',
+              prefixIcon: isTyping
+                  ? null
+                  : Icon(Icons.search, color: Colors.grey),
+              filled: true,
+              fillColor: AppColors.bcolor,
+              border: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(30),
+                borderSide: BorderSide.none,
+              ),
             ),
           ),
         ),
         actions: [
           IconButton(
             icon: Icon(Icons.shopping_cart, color: AppColors.tcolor),
-            onPressed: () {
-              // Navigate to Cart
-            },
+            onPressed: () {},
           ),
         ],
+      ),
+      drawer: Drawer(
+        child: ListView(
+          padding: EdgeInsets.zero,
+          children: [
+            DrawerHeader(
+              decoration: BoxDecoration(
+                color: AppColors.pcolor,
+              ),
+              child: Text('assets/file.png', ), //fit: BoxFit.cover
+            ),
+            ListTile(
+              leading: Icon(Icons.home),
+              title: Text('Home'),
+              onTap: () {},
+            ),
+            ListTile(
+              leading: Icon(Icons.account_circle),
+              title: Text('Profile'),
+              onTap: () {},
+            ),
+            ListTile(
+              leading: Icon(Icons.settings),
+              title: Text('Settings'),
+              onTap: () {},
+            ),
+            ListTile(
+              leading: Icon(Icons.logout),
+              title: Text('Logout'),
+              onTap: () {},
+            ),
+          ],
+        ),
       ),
       body: SingleChildScrollView(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // Promotion Banner
             Padding(
               padding: const EdgeInsets.all(8.0),
               child: Container(
-                height: 150,
+                height: 160,
                 decoration: BoxDecoration(
+                  boxShadow: [
+                    BoxShadow(
+                      color: AppColors.tcolor.withOpacity(0.3),
+                      offset: Offset(4, 10),
+                      blurRadius: 10,
+                    ),
+                  ],
                   borderRadius: BorderRadius.circular(15),
                   image: DecorationImage(
                     image: AssetImage('assets/header.png'),
@@ -56,23 +133,19 @@ class HomeScreen extends StatelessWidget {
                 ),
               ),
             ),
-            // Categories
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 8.0),
               child: SingleChildScrollView(
                 scrollDirection: Axis.horizontal,
                 child: Row(
-                  children: [
-                    _categoryButton('All', Icons.grid_view),
-                    _categoryButton('iPhone', Icons.phone_iphone),
-                    _categoryButton('iPad', Icons.tablet_mac),
-                    _categoryButton('Accessories', Icons.headset),
-                  ],
+                  children: List.generate(categories.length, (index) {
+                    return _categoryButton(
+                        categories[index], categoryIcons[index], index);
+                  }),
                 ),
               ),
             ),
             SizedBox(height: 20),
-            // Product Recommendations
             Padding(
               padding: const EdgeInsets.all(8.0),
               child: Text(
@@ -80,39 +153,63 @@ class HomeScreen extends StatelessWidget {
                 style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
               ),
             ),
-            _productCard(
-                'assets/iphone_13.png', 'iPhone 13 Mini', 'MWK 1,000,000', 15),
-            _productCard(
-                'assets/apple_watch.jpg', 'Apple Watch S8', 'MWK 3,500,000', 20),
+            GridView.builder(
+              shrinkWrap: true,
+              physics: ScrollPhysics(),
+              padding: EdgeInsets.all(8.0),
+              gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                crossAxisCount: 2,
+                crossAxisSpacing: 10,
+                mainAxisSpacing: 10,
+                childAspectRatio: 0.75,
+              ),
+              itemCount: 4,
+              itemBuilder: (context, index) {
+                return _productCard(
+                  'assets/iphone_13.png',
+                  'iPhone 13 Mini',
+                  'MWK 760,000',
+                  15,
+                );
+              },
+            ),
           ],
         ),
       ),
       bottomNavigationBar: SafeArea(
         child: Container(
-          padding: EdgeInsets.all(12),
-          margin: EdgeInsets.symmetric(horizontal: 25),
+          padding: EdgeInsets.all(8),
+          margin: EdgeInsets.symmetric(horizontal: 40),
           decoration: BoxDecoration(
-            borderRadius: BorderRadius.all(Radius.circular(24)),
+            borderRadius: BorderRadius.circular(24),
             color: AppColors.pcolor.withOpacity(0.8),
             boxShadow: [
               BoxShadow(
-                color: AppColors.tcolor.withOpacity(0.3),
-                offset: Offset(-1, 20),
-                blurRadius: 20,
+                color: Colors.black12,
+                offset: Offset(-1, 15),
+                blurRadius: 10,
               ),
             ],
           ),
           child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: List.generate(bottomNavItems.length, (index) {
               final riveIcon = bottomNavItems[index].rive;
-              return SizedBox(
-                height: 36,
-                width: 36,
-                child: RiveAnimation.asset(
-                  riveIcon.src,
-                  artboard: riveIcon.artboard,
-                  stateMachines: [riveIcon.stateMachineName],
+              return GestureDetector(
+                onTap: () {
+                  setState(() {
+                    _activeNavIndex = index;
+                  });
+                },
+                child: SizedBox(
+                  height: 40,
+                  width: 36,
+                  child: RiveAnimation.asset(
+                    riveIcon.src,
+                    artboard: riveIcon.artboard,
+                    stateMachines: [riveIcon.stateMachineName],
+                    fit: BoxFit.cover,
+                  ),
                 ),
               );
             }),
@@ -122,16 +219,22 @@ class HomeScreen extends StatelessWidget {
     );
   }
 
-  Widget _categoryButton(String title, IconData icon) {
+  Widget _categoryButton(String title, IconData icon, int index) {
+    final isActive = index == _activeCategoryIndex;
     return Padding(
       padding: const EdgeInsets.only(right: 8.0),
       child: ElevatedButton.icon(
-        onPressed: () {},
+        onPressed: () {
+          setState(() {
+            _activeCategoryIndex = index;
+          });
+        },
         icon: Icon(icon, size: 18),
         label: Text(title),
         style: ElevatedButton.styleFrom(
-          backgroundColor: AppColors.bcolor,
-          foregroundColor: AppColors.tcolor,
+          backgroundColor:
+          isActive ? AppColors.pcolor.withOpacity(0.8) : AppColors.bcolor,
+          foregroundColor: isActive ? Colors.white : AppColors.tcolor,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(20),
           ),
@@ -140,48 +243,71 @@ class HomeScreen extends StatelessWidget {
     );
   }
 
-  Widget _productCard(String imagePath, String title, String price, int discount) {
-    return Padding(
-      padding: const EdgeInsets.all(8.0),
-      child: Card(
-        elevation: 2,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
-        child: Row(
-          children: [
-            Container(
-              height: 100,
-              width: 100,
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(15),
-                image: DecorationImage(
-                  image: AssetImage(imagePath),
-                  fit: BoxFit.cover,
+  Widget _productCard(
+      String imagePath, String title, String price, int discount) {
+    return Card(
+      elevation: 4,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(15),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          Stack(
+            children: [
+              Container(
+                height: 110,
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.vertical(top: Radius.circular(15)),
+                  image: DecorationImage(
+                    image: AssetImage(imagePath),
+                    fit: BoxFit.cover,
+                  ),
                 ),
               ),
+              if (discount > 0)
+                Positioned(
+                  top: 8,
+                  right: 8,
+                  child: Container(
+                    padding: EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                    decoration: BoxDecoration(
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.black12,
+                          offset: Offset(-2, 9),
+                          blurRadius: 10,
+                        ),
+                      ],
+                      color: AppColors.pcolor,
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    child: Text(
+                      '-$discount%',
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ),
+                ),
+            ],
+          ),
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Text(
+              title,
+              style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
             ),
-            SizedBox(width: 10),
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  title,
-                  style: TextStyle(fontWeight: FontWeight.bold),
-                ),
-                SizedBox(height: 5),
-                Text(
-                  price,
-                  style: TextStyle(
-                      color: Colors.red, fontWeight: FontWeight.bold),
-                ),
-                SizedBox(height: 5),
-                Text(
-                  '$discount% OFF',
-                  style: TextStyle(color: Colors.green),
-                ),
-              ],
+          ),
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Text(
+              price,
+              style: TextStyle(fontSize: 14, color: AppColors.tcolor),
             ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }
